@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tabelas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Discord Bot</h1>
+
+    <h3>Chat Log Server</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome do Bot</th>
+            <th>Habilitar</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chatBot : ${chatBots}">
+            <td th:text="${chatBot.getId()}"></td>
+            <td th:text="${chatBot.getNameBot()}"></td>
+            <td th:text="${chatBot.getEnable()} ? 'Sim' : 'Não'"></td>
+            <td>
+                <a th:href="@{/edit/chat-log/{id}(id=${chatBot.getId()})}" class="btn btn-warning">Editar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>Join Players Server</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome do Bot</th>
+            <th>Habilitar</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="joinPlayer : ${joinPlayers}">
+            <td th:text="${joinPlayer.getId()}"></td>
+            <td th:text="${joinPlayer.getNameBot()}"></td>
+            <td th:text="${joinPlayer.getEnable()} ? 'Sim' : 'Não'"></td>
+            <td>
+                <a th:href="@{/edit/join-player/{id}(id=${joinPlayer.getId()})}" class="btn btn-warning">Editar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>PBBANS Screens Server</h3>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome do Bot</th>
+            <th>Habilitar</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pbbansScreen : ${pbbansScreens}">
+            <td th:text="${pbbansScreen.getId()}"></td>
+            <td th:text="${pbbansScreen.getNameBot()}"></td>
+            <td th:text="${pbbansScreen.getEnable()} ? 'Sim' : 'Não'"></td>
+            <td>
+                <a th:href="@{/edit/pbbans-screen/{id}(id=${pbbansScreen.getId()})}" class="btn btn-warning">Editar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

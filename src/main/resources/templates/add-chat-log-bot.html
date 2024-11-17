@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário ChatBot</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="container mt-5">
+
+<h1>Formulário ChatBot</h1>
+
+<form id="chatbotForm">
+    <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}"/>
+    <div class="mb-3">
+        <label for="database_name" class="form-label">Nome do Banco de Dados</label>
+        <input type="text" class="form-control" id="database_name" name="database_name"
+               th:value="${chatlog.getDatabaseName()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="discord_id_channel" class="form-label">ID do Canal Discord</label>
+        <input type="text" class="form-control" id="discord_id_channel" name="discord_id_channel"
+               th:value="${chatlog.getDiscordIdChannel()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="discord_token" class="form-label">Token Discord</label>
+        <input type="text" class="form-control" id="discord_token" name="discord_token"
+               th:value="${chatlog.getDiscordToken()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="ip" class="form-label">IP</label>
+        <input type="text" class="form-control" id="ip" name="ip"
+               th:value="${chatlog.getIp()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="login" class="form-label">Login</label>
+        <input type="text" class="form-control" id="login" name="login"
+               th:value="${chatlog.getLogin()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="pass" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="pass" name="pass"
+               th:value="${chatlog.getPass()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="port" class="form-label">Porta</label>
+        <input type="text" class="form-control" id="port" name="port"
+               th:value="${chatlog.getPort()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="ip_port_server" class="form-label">IP:PORT Server</label>
+        <input type="text" class="form-control" id="ip_port_server" name="ip_port_server"
+               th:value="${chatlog.getIpPortServer()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="name_bot" class="form-label">Nome do Bot</label>
+        <input type="text" class="form-control" id="name_bot" name="name_bot"
+               th:value="${chatlog.getNameBot()}" required>
+    </div>
+    <div class="mb-3">
+        <label for="url_bot" class="form-label">URL do Bot</label>
+        <input type="text" class="form-control" id="url_bot" name="url_bot"
+               th:value="${chatlog.getUrlBot()}" required>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="enable" name="enable" required>
+        <label class="form-check-label" for="enable">Habilitar/Desabilitar</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $("#chatbotForm").submit(function(event) {
+            event.preventDefault(); // Prevenir o envio padrão do formulário
+
+            // Pegar os dados do formulário
+            var formData = {
+                database_name: $("#database_name").val(),
+                discord_id_channel: $("#discord_id_channel").val(),
+                discord_token: $("#discord_token").val(),
+                ip: $("#ip").val(),
+                login: $("#login").val(),
+                pass: $("#pass").val(),
+                port: $("#port").val(),
+                ip_port_server: $("#ip_port_server").val(),
+                name_bot: $("#name_bot").val(),
+                url_bot: $("#url_bot").val(),
+                enable: $("#enable").is(':checked') ? "true" : "false"
+            };
+
+
+            var csrfToken = $("#_csrf").val();
+            var csrfHeader = 'X-CSRF-TOKEN';
+
+            // Requisição AJAX via jQuery
+            $.ajax({
+                type: "POST",
+                url: "/api/chat-bot", // Verifique se esta URL está correta
+                contentType: "application/json",
+                headers: {
+                    [csrfHeader]: csrfToken // Adiciona o token CSRF no cabeçalho
+                },
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    alert("Dados enviados com sucesso!");
+                    // Redirecionar ou fazer algo após sucesso
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro ao enviar os dados:", error);
+                    alert("Erro ao enviar os dados! Código de status: " + xhr.status);
+                }
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
