@@ -107,7 +107,7 @@ public class DiscordPbbansMessageServiceImpl extends DataBaseResultAbstract impl
         fields.add(new MessageEmbed.Field("Data", responsePbbansLog.getData().toString(), false));
         fields.add(new MessageEmbed.Field("URL", imagePathOrUrl, false));
 
-        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim","", "");
+        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim/plugin-discord-chat-pbbscreen","", "");
         MessageEmbed.Footer footer = new MessageEmbed.Footer("Visualização do Chat Log Online","","");
 
         MessageEmbed embed = new MessageEmbed(
