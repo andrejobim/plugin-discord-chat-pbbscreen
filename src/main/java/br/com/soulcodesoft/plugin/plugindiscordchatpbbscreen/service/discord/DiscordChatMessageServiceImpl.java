@@ -4,7 +4,9 @@ import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.DiscordPluginTy
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.ResponseChatLog;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.entity.ChatLogEntity;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.chatlog.ChatLogService;
-import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DiscordAbstract;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.AuthenticationDiscordService;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DataBaseResultAbstract;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class DiscordChatMessageServiceImpl extends DiscordAbstract implements DiscordChatMessageService {
+public class DiscordChatMessageServiceImpl extends DataBaseResultAbstract implements DiscordChatMessageService {
 
     private static final String SQL_CHAT_LOG =
             " select " +
@@ -39,9 +41,12 @@ public class DiscordChatMessageServiceImpl extends DiscordAbstract implements Di
                     "limit 10  ";
 
     private final ChatLogService chatLogService;
+    private final AuthenticationDiscordService authenticationDiscordService;
 
-    public DiscordChatMessageServiceImpl(ChatLogService chatLogService) {
+    public DiscordChatMessageServiceImpl(ChatLogService chatLogService,
+                                         AuthenticationDiscordService authenticationDiscordService) {
         this.chatLogService = chatLogService;
+        this.authenticationDiscordService = authenticationDiscordService;
     }
 
     @Override
@@ -58,12 +63,14 @@ public class DiscordChatMessageServiceImpl extends DiscordAbstract implements Di
 
 
     private Integer sendMessageChatLogChannels(ChatLogEntity chatLog, String sqlChatLog){
+        Map<Long, JDA> chatLogConnections = authenticationDiscordService.getChatLogConnections();
         String sql = StringUtils.replace(sqlChatLog,":lastId",
                 Objects.isNull(chatLog.getLastId()) ? "0" : chatLog.getLastId().toString());
         List<ResponseChatLog> resultSet = getResultSet(chatLog.getIp(), String.valueOf(chatLog.getPort()),
                 chatLog.getDatabase(), chatLog.getLogin(), chatLog.getPassword(), sql, DiscordPluginType.CHAT_LOG);
         if (!resultSet.isEmpty()){
-            TextChannel textChannel = authenticationDiscord(chatLog.getDiscordToken(), chatLog.getDiscordIdChannel());
+            JDA jda = chatLogConnections.get(chatLog.getIdChatLog());
+            TextChannel textChannel = jda.getTextChannelById(chatLog.getDiscordIdChannel());
             if (Objects.nonNull(textChannel)) {
                 sendChatLogsBatches(textChannel, resultSet);
                 Optional<ResponseChatLog> lastRegister = resultSet.stream()

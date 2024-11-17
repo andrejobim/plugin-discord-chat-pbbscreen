@@ -6,6 +6,7 @@ import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.ResponseChatLog
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 public class DataBaseResultAbstract extends DataBaseAbstract {
 
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected List getResponseChatLogResultSetDataBase(ResultSet rs) {

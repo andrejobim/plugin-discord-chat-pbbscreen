@@ -6,8 +6,10 @@ import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.JoinPlayerLog;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.entity.JoinPlayerServerEntity;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.bf4db.RequestApiBf4dbService;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.bf4db.RequestUrlBf4dbInfoService;
-import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DiscordAbstract;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.AuthenticationDiscordService;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DataBaseResultAbstract;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.joinplayer.JoinPlayerSevice;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -19,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class DiscordJoinPlayerMessageServiceImpl extends DiscordAbstract implements DiscordJoinPlayerMessageService {
+public class DiscordJoinPlayerMessageServiceImpl extends DataBaseResultAbstract implements DiscordJoinPlayerMessageService {
 
     private final static String SQL_JOIN_PLAYER =
             " SELECT  " +
@@ -46,13 +48,16 @@ public class DiscordJoinPlayerMessageServiceImpl extends DiscordAbstract impleme
     private final JoinPlayerSevice joinPlayerSevice;
     private final RequestApiBf4dbService requestApiBf4dbService;
     private final RequestUrlBf4dbInfoService requestUrlBf4dbInfoService;
+    private final AuthenticationDiscordService authenticationDiscordService;
 
     public DiscordJoinPlayerMessageServiceImpl(JoinPlayerSevice joinPlayerSevice,
                                                RequestApiBf4dbService requestApiBf4dbService,
-                                               RequestUrlBf4dbInfoService requestUrlBf4dbInfoService) {
+                                               RequestUrlBf4dbInfoService requestUrlBf4dbInfoService,
+                                               AuthenticationDiscordService authenticationDiscordService) {
         this.joinPlayerSevice = joinPlayerSevice;
         this.requestApiBf4dbService = requestApiBf4dbService;
         this.requestUrlBf4dbInfoService = requestUrlBf4dbInfoService;
+        this.authenticationDiscordService = authenticationDiscordService;
     }
 
     @Override
@@ -68,7 +73,7 @@ public class DiscordJoinPlayerMessageServiceImpl extends DiscordAbstract impleme
     }
 
     private LocalDateTime sendMessage(JoinPlayerServerEntity joinPlayerServerEntity) {
-
+        Map<Long, JDA> chatLogConnections = authenticationDiscordService.getDiscordJoinPlayerMessageService();
         List<JoinPlayerLog> resultSet = getResultSet(joinPlayerServerEntity.getIp(), String.valueOf(joinPlayerServerEntity.getPort()),
                 joinPlayerServerEntity.getDatabase(), joinPlayerServerEntity.getLogin(), joinPlayerServerEntity.getPassword(), SQL_JOIN_PLAYER, DiscordPluginType.JOIN_PLAYER);
 
@@ -77,8 +82,9 @@ public class DiscordJoinPlayerMessageServiceImpl extends DiscordAbstract impleme
 
         if (responseCrescente.isPresent()){
 
-            TextChannel textChannel = authenticationDiscord
-                    (joinPlayerServerEntity.getDiscordToken(), joinPlayerServerEntity.getDiscordIdChannel());
+            JDA jda = chatLogConnections.get(joinPlayerServerEntity.getIdJoinPlayerServer());
+            TextChannel textChannel = jda.getTextChannelById(joinPlayerServerEntity.getDiscordIdChannel());
+
             if (Objects.nonNull(textChannel)) {
 
                 JoinPlayerLog joinPlayerLog = responseCrescente.get();

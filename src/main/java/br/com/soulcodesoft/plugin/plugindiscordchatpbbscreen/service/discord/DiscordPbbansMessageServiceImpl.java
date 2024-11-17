@@ -3,8 +3,10 @@ package br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.discord;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.ProtocolPbbansType;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.dto.ResponsePbbansLog;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.entity.PbbansScreenEntity;
-import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DiscordAbstract;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.AuthenticationDiscordService;
+import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.commons.DataBaseResultAbstract;
 import br.com.soulcodesoft.plugin.plugindiscordchatpbbscreen.service.pbbans.PbbansScreenService;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -21,12 +23,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class DiscordPbbansMessageServiceImpl extends DiscordAbstract implements DiscordPbbansMessageService{
+public class DiscordPbbansMessageServiceImpl extends DataBaseResultAbstract implements DiscordPbbansMessageService{
 
     private final PbbansScreenService pbbansScreenService;
+    private final AuthenticationDiscordService authenticationDiscordService;
 
-    public DiscordPbbansMessageServiceImpl(PbbansScreenService pbbansScreenService) {
+    public DiscordPbbansMessageServiceImpl(PbbansScreenService pbbansScreenService,
+                                           AuthenticationDiscordService authenticationDiscordService) {
         this.pbbansScreenService = pbbansScreenService;
+        this.authenticationDiscordService = authenticationDiscordService;
     }
 
     @Override
@@ -42,10 +47,11 @@ public class DiscordPbbansMessageServiceImpl extends DiscordAbstract implements 
     }
 
     public LocalDateTime sendMessagePbbansScrens(PbbansScreenEntity pbbansScreenEntity){
+        Map<Long, JDA> chatLogConnections = authenticationDiscordService.getPbbansScreenConnections();
         List<ResponsePbbansLog> resultSet = getResultByProtocol(pbbansScreenEntity);
         if (!resultSet.isEmpty()){
-            TextChannel textChannel = authenticationDiscord
-                    (pbbansScreenEntity.getDiscordToken(), pbbansScreenEntity.getDiscordIdChannel());
+            JDA jda = chatLogConnections.get(pbbansScreenEntity.getIdPabbansScreen());
+            TextChannel textChannel = jda.getTextChannelById(pbbansScreenEntity.getDiscordIdChannel());
             if (Objects.nonNull(textChannel)) {
                 return sendPbbansScreenShotBatches(textChannel, resultSet, pbbansScreenEntity);
             } else {
@@ -101,7 +107,7 @@ public class DiscordPbbansMessageServiceImpl extends DiscordAbstract implements 
         fields.add(new MessageEmbed.Field("Data", responsePbbansLog.getData().toString(), false));
         fields.add(new MessageEmbed.Field("URL", imagePathOrUrl, false));
 
-        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim/plugin-discord-chat-pbbscreen","", "");
+        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim","", "");
         MessageEmbed.Footer footer = new MessageEmbed.Footer("Visualização do Chat Log Online","","");
 
         MessageEmbed embed = new MessageEmbed(
