@@ -100,7 +100,7 @@ public class DiscordChatMessageServiceImpl extends DiscordAbstract implements Di
         fields.add(new MessageEmbed.Field("Mensagem", String.format("``` %s ```", log.getPlayerChat()) , false));
 
 
-        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim","", "");
+        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim/plugin-discord-chat-pbbscreen","", "");
         MessageEmbed.Footer footer = new MessageEmbed.Footer("Visualização do Chat Log Online","","");
         MessageEmbed message = new MessageEmbed(
                 null,"LOG CHAT",null,

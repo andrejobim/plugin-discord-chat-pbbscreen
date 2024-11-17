@@ -179,7 +179,7 @@ public class DiscordJoinPlayerMessageServiceImpl extends DiscordAbstract impleme
         fields.add(new MessageEmbed.Field("Team", getDescriptionByTeamId(joinPlayerServer.getTeamID()), false));
         fields.add(new MessageEmbed.Field("URLS", userUrls , false));
 
-        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim","", "");
+        MessageEmbed.AuthorInfo authorInfo = new MessageEmbed.AuthorInfo("Author: André Jobim", "https://github.com/andrejobim/plugin-discord-chat-pbbscreen","", "");
         MessageEmbed.Footer footer = new MessageEmbed.Footer("Acompanhamento de jogador entrando no servidor","","");
         MessageEmbed message = new MessageEmbed(
                 null,"New Join Player",null,
