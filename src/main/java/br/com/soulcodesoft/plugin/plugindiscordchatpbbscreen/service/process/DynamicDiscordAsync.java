@@ -25,30 +25,30 @@ public class DynamicDiscordAsync {
         this.discordJoinPlayerMessageService = discordJoinPlayerMessageService;
     }
 
-//    @Scheduled(initialDelay = 5000, fixedRate = Long.MAX_VALUE)
-//    public void initialExecution() {
-//        executePbbansTasks();
-//        executeChatTasks();
-//        executeJoinChatTasks();
-//    }
-//
-//    @Scheduled(cron = "0 */5 * * * *")
-//    public void executePbbansTasks() {
-//        CompletableFuture<String> discordPbbans = dynamicAsyncService
-//                .processTask(discordPbbansMessageService);
-//        CompletableFuture.allOf(discordPbbans).join();
-//    }
-//    @Scheduled(cron = "0 */3 * * * *")
-//    public void executeChatTasks() {
-//        CompletableFuture<String> discordChat = dynamicAsyncService
-//                .processTask(discordChatMessageService);
-//        CompletableFuture.allOf(discordChat).join();
-//    }
-//
-//    @Scheduled(cron = "0 */1 * * * *")
-//    public void executeJoinChatTasks() {
-//        CompletableFuture<String> discordChat = dynamicAsyncService
-//                .processTask(discordJoinPlayerMessageService);
-//        CompletableFuture.allOf(discordChat).join();
-//    }
+    @Scheduled(initialDelay = 5000, fixedRate = Long.MAX_VALUE)
+    public void initialExecution() {
+        executePbbansTasks();
+        executeChatTasks();
+        executeJoinChatTasks();
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void executePbbansTasks() {
+        CompletableFuture<String> discordPbbans = dynamicAsyncService
+                .processTask(discordPbbansMessageService);
+        CompletableFuture.allOf(discordPbbans).join();
+    }
+    @Scheduled(cron = "0 */3 * * * *")
+    public void executeChatTasks() {
+        CompletableFuture<String> discordChat = dynamicAsyncService
+                .processTask(discordChatMessageService);
+        CompletableFuture.allOf(discordChat).join();
+    }
+
+    @Scheduled(cron = "0 */1 * * * *")
+    public void executeJoinChatTasks() {
+        CompletableFuture<String> discordChat = dynamicAsyncService
+                .processTask(discordJoinPlayerMessageService);
+        CompletableFuture.allOf(discordChat).join();
+    }
 }
