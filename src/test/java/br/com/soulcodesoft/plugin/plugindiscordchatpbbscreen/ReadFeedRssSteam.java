@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 public class ReadFeedRssSteam {
 
     public static void main(String[] args) {
-        String url = "https://keeper.battlelog.com/snapshot/e691cf14-735a-4f60-984c-5d98c12971d9"; // Substitua pela URL desejada
+        String url = ""; // Substitua pela URL desejada
         ObjectMapper objectMapper = new ObjectMapper();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -38,7 +38,7 @@ public class ReadFeedRssSteam {
 
 
     private static void sendMessageToDiscord(String message) {
-        String discordWebhookUrl = "https://discord.com/api/webhooks/1236309338100990013/_Hhg_Bal5Wjc67tCAPYqTSKDok-16zKOe-Ewtn9DX_v4xcF-OpZjQM11jRxrT5ZBEBwM"; // Substitua pela URL do seu webhook
+        String discordWebhookUrl = ""; // Substitua pela URL do seu webhook
 
         // Escapa caracteres especiais que podem causar erro
         String escapedMessage = escapeJson(message);
